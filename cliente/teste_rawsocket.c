@@ -38,16 +38,26 @@ int cria_raw_socket(char* nome_interface_rede) {
     return soquete;
 }
 
+
 int main() {
 	int soquete = cria_raw_socket("enp0s3");
 	printf("Socket criado com sucesso!\n");
-	void* buffer = malloc(31);
-	int tamanho = recv(soquete, buffer, 31, 0);
-	if (tamanho == -1) {
-		fprintf(stderr, "Erro ao receber pacote\n");
+	char* buffer;
+	buffer = malloc(31);
+	if (buffer == NULL) {
+		fprintf(stderr, "Erro ao alocar memória\n");
 		exit(-1);
 	}
-    printf("Pacote recebido com sucesso!\n");
-    free(buffer);
-    return 0;
+	buffer[0] = '~'; 
+	for (int i = 1; i < 31; i++) {
+		buffer[i] = 'a';
+	}
+	int tamanho = send(soquete, buffer, 31, 0);
+	if (tamanho == -1) {
+		fprintf(stderr, "Erro ao enviar pacote\n");
+		exit(-1);
+	}
+	printf("Pacote enviado com sucesso!\n");
+	free(buffer);
+	return 0;
 }
