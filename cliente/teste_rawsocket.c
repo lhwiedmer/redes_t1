@@ -41,7 +41,7 @@ int cria_raw_socket(char* nome_interface_rede) {
 
 
 int main() {
-	int soquete = cria_raw_socket("enp0s3");
+	int soquete = cria_raw_socket("enp2s0");
 	printf("Socket criado com sucesso!\n");
 	char* buffer;
 	buffer = malloc(31);
