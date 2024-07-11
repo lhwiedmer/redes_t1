@@ -4,6 +4,7 @@
 #include <net/if.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
  
 int cria_raw_socket(char* nome_interface_rede) {
     // Cria arquivo para o socket sem qualquer protocolo
@@ -48,6 +49,8 @@ int main() {
 		exit(-1);
 	}
     printf("Pacote recebido com sucesso!\n");
+    printf("Conteúdo do pacote: %s\n", (char*) buffer);
     free(buffer);
+    close(soquete);
     return 0;
 }
