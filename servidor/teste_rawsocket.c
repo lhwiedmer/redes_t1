@@ -42,14 +42,17 @@ int cria_raw_socket(char* nome_interface_rede) {
 int main() {
 	int soquete = cria_raw_socket("enp7s0");
 	printf("Socket criado com sucesso!\n");
-	void* buffer = malloc(31);
+	char* buffer = malloc(31);
 	int tamanho = recv(soquete, buffer, 31, 0);
 	if (tamanho == -1) {
 		fprintf(stderr, "Erro ao receber pacote\n");
 		exit(-1);
 	}
     printf("Pacote recebido com sucesso!\n");
-    printf("Conteúdo do pacote: %s\n", (char*) buffer);
+    printf("Conteúdo do pacote: ");
+    for (int i = 0; i < tamanho; i++) {
+        printf("%c", buffer[i]);
+    }
     free(buffer);
     close(soquete);
     return 0;
