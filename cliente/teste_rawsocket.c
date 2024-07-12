@@ -1,6 +1,7 @@
 #include <arpa/inet.h>
 #include <net/ethernet.h>
 #include <linux/if_packet.h>
+#include <sys/time.h>
 #include <net/if.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -43,8 +44,10 @@ int cria_raw_socket(char* nome_interface_rede) {
 int main() {
 	int soquete = cria_raw_socket("enp2s0");
 	printf("Socket criado com sucesso!\n");
-	char* buffer;
-	buffer = malloc(31);
+	const int timeoutMillis = 300;
+    struct timeval timeout = { .tv_sec = timeoutMillis / 1000, .tv_usec = (timeoutMillis % 1000) * 1000 }; // 300ms
+    setsockopt(soquete, SOL_SOCKET, SO_RCVTIMEO, (char*) &timeout, sizeof(timeout));
+    char* buffer = malloc(31);
 	if (buffer == NULL) {
 		fprintf(stderr, "Erro ao alocar memória\n");
 		exit(-1);
@@ -59,6 +62,17 @@ int main() {
 		exit(-1);
 	}
 	printf("Pacote enviado com sucesso!\n");
+    tamanho = recv(soquete, buffer, 31, 0);
+    if (tamanho == -1) {
+        fprintf(stderr, "Erro ao receber pacote\n");
+        exit(-1);
+    }
+    printf("Pacote recebido com sucesso!\n");
+    printf("Conteúdo do pacote: ");
+    for (int i = 0; i < tamanho; i++) {
+        printf("%c", buffer[i]);
+    }
+    printf("\n");
 	free(buffer);
     close(soquete);
 	return 0;
