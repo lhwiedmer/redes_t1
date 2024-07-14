@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
- 
-int cria_raw_socket(char* nome_interface_rede) {
+
+int criaRawSocket(char* nome_interface_rede) {
     // Cria arquivo para o socket sem qualquer protocolo
     int soquete = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
     if (soquete == -1) {
@@ -36,44 +36,11 @@ int cria_raw_socket(char* nome_interface_rede) {
             "Verifique se a interface de rede foi especificada corretamente.\n");
         exit(-1);
     }
- 
+
     return soquete;
 }
 
-
-int main() {
-	int soquete = cria_raw_socket("enp2s0");
-	printf("Socket criado com sucesso!\n");
-	const int timeoutMillis = 300;
-    struct timeval timeout = { .tv_sec = timeoutMillis / 1000, .tv_usec = (timeoutMillis % 1000) * 1000 }; // 300ms
-    setsockopt(soquete, SOL_SOCKET, SO_RCVTIMEO, (char*) &timeout, sizeof(timeout));
-    char* buffer = malloc(31);
-	if (buffer == NULL) {
-		fprintf(stderr, "Erro ao alocar memória\n");
-		exit(-1);
-	}
-	buffer[0] = '~'; 
-	for (int i = 1; i < 31; i++) {
-		buffer[i] = 'a';
-	}
-	int tamanho = send(soquete, buffer, 31, 0);
-	if (tamanho == -1) {
-		fprintf(stderr, "Erro ao enviar pacote\n");
-		exit(-1);
-	}
-	printf("Pacote enviado com sucesso!\n");
-    tamanho = recv(soquete, buffer, 31, 0);
-    if (tamanho == -1) {
-        fprintf(stderr, "Erro ao receber pacote\n");
-        exit(-1);
-    }
-    printf("Pacote recebido com sucesso!\n");
-    printf("Conteúdo do pacote: ");
-    for (int i = 0; i < tamanho; i++) {
-        printf("%c", buffer[i]);
-    }
-    printf("\n");
-	free(buffer);
-    close(soquete);
-	return 0;
+int setaTimeout(int soquete, int timeoutMillis) {
+	struct timeval timeout = { .tv_sec = timeoutMillis / 1000, .tv_usec = (timeoutMillis % 1000) * 1000 }; // 300ms
+	return setsockopt(soquete, SOL_SOCKET, SO_RCVTIMEO, (char*) &timeout, sizeof(timeout));
 }
