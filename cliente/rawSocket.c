@@ -1,11 +1,4 @@
-#include <arpa/inet.h>
-#include <net/ethernet.h>
-#include <linux/if_packet.h>
-#include <sys/time.h>
-#include <net/if.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
+#include "rawSocket.h"
 
 int criaRawSocket(char* nome_interface_rede) {
     // Cria arquivo para o socket sem qualquer protocolo
@@ -43,4 +36,30 @@ int criaRawSocket(char* nome_interface_rede) {
 int setaTimeout(int soquete, int timeoutMillis) {
 	struct timeval timeout = { .tv_sec = timeoutMillis / 1000, .tv_usec = (timeoutMillis % 1000) * 1000 }; // 300ms
 	return setsockopt(soquete, SOL_SOCKET, SO_RCVTIMEO, (char*) &timeout, sizeof(timeout));
+}
+
+void enviaPacote(int soquete, struct frame *f) {
+    __uint8_t *buffer = frameParaBuffer(f);
+    int tamanho = send(soquete, buffer, 4 + f->tam, 0);
+    if (tamanho == -1) {
+        fprintf(stderr, "Erro ao enviar pacote\n");
+        exit(-1);
+    }
+    free(buffer);
+}
+
+struct frame *recebePacote(int soquete) {
+    __uint8_t *buffer = malloc(64);
+    if (buffer == NULL) {
+        fprintf(stderr, "Erro ao alocar memória\n");
+        exit(-1);
+    }
+    int tamanho = recv(soquete, buffer, 31, 0);
+    if (tamanho == -1) {
+        fprintf(stderr, "Erro ao receber pacote\n");
+        exit(-1);
+    }
+    struct frame *f = bufferParaFrame(buffer);
+    free(buffer);
+    return f;
 }

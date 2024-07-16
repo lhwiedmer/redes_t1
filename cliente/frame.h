@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 #define ACK 0
 #define NACK 1
 #define LISTA 10
@@ -28,5 +27,7 @@ struct frame *cria_frame(unsigned char tam, unsigned char seq, unsigned char tip
 void destroi_frame(struct frame *f);
 
 __uint8_t* frameParaBuffer(struct frame *f);
+
+struct frame *bufferParaFrame(__uint8_t *buffer);
 
 #endif
