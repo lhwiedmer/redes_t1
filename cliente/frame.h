@@ -18,7 +18,7 @@ struct frame {
 	__uint8_t tam: 6;
 	__uint8_t seq: 5;
 	__uint8_t tipo: 5;
-	__uint8_t *dados;
+	__uint8_t dados[64];
 	__uint8_t crc;
 };
 
