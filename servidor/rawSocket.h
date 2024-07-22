@@ -59,10 +59,15 @@ void enviaAck(int soquete, int seq);
 
 void enviaNack(int soquete, int seq);
 
-void enviaLista(int soquete);
+void enviaMostraNaTela(int soquete);
 
-void enviaBaixar(int soquete, char *nome_arquivo);
+void enviaDescritor(int soquete, char *nome_arquivo);
+
+void enviaDados(int soquete, char *nome_arquivo);
+
+void enviaFimDeTransmissao(int soquete);
 
 void enviaErro(int soquete);
+
 
 #endif
