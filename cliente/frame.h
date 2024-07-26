@@ -19,11 +19,13 @@ struct frame {
 	__uint8_t tam: 6;
 	__uint8_t seq: 5;
 	__uint8_t tipo: 5;
-	__uint8_t dados[TAM_MAX];
+	__uint8_t *dados;
 	__uint8_t crc;
 };
 
 struct frame *cria_frame(unsigned char tam, unsigned char seq, unsigned char tipo);
+
+void aloca_dados(struct frame *f, unsigned char tam);
 
 void destroi_frame(struct frame *f);
 

@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include "frame.h"
 
-//LEMBRETE: FAZER O DADOS SEREM ALOCADOS NA PILHA AO INVES DA HEAP
-
 struct frame *cria_frame(unsigned char tam, unsigned char seq, unsigned char tipo) {
 	struct frame *f = malloc(sizeof(struct frame));
 	if (f == NULL) {

@@ -55,14 +55,14 @@ uint8_t calculaCrc8(uint8_t *data, uint8_t tam);
   11111 erro
 */
 
-void enviaAck(int soquete, int seq);
+void enviaAck(int soquete, uint8_t seq);
 
-void enviaNack(int soquete, int seq);
+void enviaNack(int soquete, uint8_t seq);
 
-void enviaLista(int soquete);
+void enviaLista(int soquete, uint8_t seq);
 
-void enviaBaixar(int soquete, char *nome_arquivo);
+void enviaBaixar(int soquete, char *nome_arquivo, uint8_t seq);
 
-void enviaErro(int soquete);
+void enviaErro(int soquete, uint8_t seq);
 
 #endif

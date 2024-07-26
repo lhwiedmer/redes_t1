@@ -81,3 +81,28 @@ uint8_t calculaCrc8(uint8_t *data, uint8_t tam) {
     return crc;
 }
 
+void enviaAck(int soquete, uint8_t seq) {
+    struct frame *f = cria_frame(0, seq, ACK);
+    enviaPacote(soquete, f);
+    destroi_frame(f);
+}
+
+void enviaNack(int soquete, uint8_t seq) {
+    struct frame *f = cria_frame(0, seq, NACK);
+    enviaPacote(soquete, f);
+    destroi_frame(f);
+}
+
+void enviaLista(int soquete, uint8_t seq) {
+    struct frame *f = cria_frame(0, seq, LISTA);
+    enviaPacote(soquete, f);
+    destroi_frame(f);
+}
+
+void enviaBaixar(int soquete, char *nome_arquivo, uint8_t seq) {
+
+}
+
+void enviaErro(int soquete, uint8_t seq) {
+
+}

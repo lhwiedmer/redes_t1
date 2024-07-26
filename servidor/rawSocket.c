@@ -81,3 +81,68 @@ uint8_t calculaCrc8(uint8_t *data, uint8_t tam) {
     return crc;
 }
 
+void enviaAck(int soquete, uint8_t seq) {
+    struct frame *f = cria_frame(0, seq, ACK);
+    enviaPacote(soquete, f);
+    destroi_frame(f);
+}
+
+void enviaNack(int soquete, uint8_t seq) {
+    struct frame *f = cria_frame(0, seq, NACK);
+    enviaPacote(soquete, f);
+    destroi_frame(f);
+}
+
+void mostraNaTela(int soquete, uint8_t seq) {
+    DIR *diretorio = opendir("Arquivos");
+    if (diretorio == NULL) {
+        fprintf(stderr, "Diretório de arquivos não encontrado\n");
+        exit(-1);
+    }
+    struct dirent *arquivo;
+    while ((arquivo = readdir(diretorio)) != NULL) {
+        struct frame *f = cria_frame(strlen(arquivo->d_name), 0, MOSTRAR_NA_TELA);
+        for (int i = 0; i < strlen(arquivo->d_name); i++) {
+            f->dados[i] = (__uint8_t)arquivo->d_name[i];
+        }
+        enviaPacote(soquete, f);
+        if (recebePacote(soquete)->tipo == NACK) {
+            enviaPacote(soquete, f);
+        }
+    }
+}
+
+void enviaDescritor(int soquete, char *nome_arquivo, uint8_t seq) {
+    DIR *diretorio = opendir("Arquivos");
+    if (diretorio == NULL) {
+        fprintf(stderr, "Diretório de arquivos não encontrado\n");
+        exit(-1);
+    }
+    FILE *arquivo = fopen(nome_arquivo, "r");
+    if (arquivo == NULL) {
+        fprintf(stderr, "Arquivo não encontrado\n");
+        exit(2);
+    }
+    struct stat st;
+    fstat(fileno(arquivo), &st);
+    struct frame *f = cria_frame(sizeof(off_t), 0, DESCRITOR_DE_ARQUIVO);
+    off_t tamanho = st.st_size;
+    memcpy(f->dados, &tamanho, sizeof(off_t));
+    enviaPacote(soquete, f);
+}
+
+void enviaDados(int soquete, char *nome_arquivo, uint8_t seq) {
+
+}
+
+void enviaFimDeTransmissao(int soquete, uint8_t seq) {
+    struct frame *f = cria_frame(0, 0, FIM_DE_TRANSMISSAO);
+    enviaPacote(soquete, f);
+    destroi_frame(f);
+}
+
+void enviaErro(int soquete, uint8_t erro, uint8_t seq) {
+    struct frame *f = cria_frame(1, 0, ERRO);
+    enviaPacote(soquete, f);
+    destroi_frame(f);
+}

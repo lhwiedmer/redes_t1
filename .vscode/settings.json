@@ -4,6 +4,7 @@
 		"stdio.h": "c",
 		"if_packet.h": "c",
 		"stdlib.h": "c",
-		"time.h": "c"
+		"time.h": "c",
+		"rawsocket.h": "c"
 	}
 }

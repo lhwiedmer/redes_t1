@@ -5,10 +5,14 @@
 #include <net/ethernet.h>
 #include <linux/if_packet.h>
 #include <sys/time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <net/if.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <dirent.h>
+#include <string.h>
 #include "frame.h"
 
 int criaRawSocket(char* nome_interface_rede);
@@ -55,19 +59,19 @@ uint8_t calculaCrc8(uint8_t *data, uint8_t tam);
   11111 erro
 */
 
-void enviaAck(int soquete, int seq);
+void enviaAck(int soquete, uint8_t seq);
 
-void enviaNack(int soquete, int seq);
+void enviaNack(int soquete, uint8_t seq);
 
-void enviaMostraNaTela(int soquete);
+void mostraNaTela(int soquete, uint8_t seq);
 
-void enviaDescritor(int soquete, char *nome_arquivo);
+void enviaDescritor(int soquete, char *nome_arquivo, uint8_t seq);
 
-void enviaDados(int soquete, char *nome_arquivo);
+void enviaDados(int soquete, char *nome_arquivo, uint8_t seq);
 
-void enviaFimDeTransmissao(int soquete);
+void enviaFimDeTransmissao(int soquete, uint8_t seq);
 
-void enviaErro(int soquete);
+void enviaErro(int soquete, uint8_t erro, uint8_t seq);
 
 
 #endif
